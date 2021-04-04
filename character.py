@@ -62,6 +62,7 @@ class Character:
             self.pt = self.grid_pt_next.pt
             print(f'AT SOURCE {self.grid_pt.index} with adj_list {self.grid_pt.adj_list}')
             return True
+
         return False
 
     def off_screen(self): return self.rect.right < 0 or self.rect.left > self.screen_rect.width
