@@ -73,7 +73,6 @@ class Character:
         return self.game.to_grid(index)
 
     def update_next_prev(self):
-        self.grid_pt_next.make_next()
         self.grid_pt_prev.make_visited()
 
     def reverse(self):
@@ -81,11 +80,7 @@ class Character:
         self.grid_pt_prev = self.grid_pt_next
         self.grid_pt_next = temp
 
-        self.grid_pt_prev.make_prev()
-        self.grid_pt_next.make_next()
-
         self.v *= -1
-        self.scale_factor = 1
         self.update_angle()
 
     def angle(self):
