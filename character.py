@@ -25,6 +25,8 @@ class Character:
         # self.choose_next()
         self.pt = copy(self.grid_pt.pt)
         self.location_displayed = False
+        self.eat = pg.mixer.Sound("eat.wav")
+        self.score = 0
 
     def clamp(self):
         screen = self.screen_rect
@@ -53,6 +55,7 @@ class Character:
                 # print(f'AT DEST {self.grid_pt.index} delta is {delta} pt is {self.pt}, '
                 #       f'next is {self.grid_pt_next.pt} with adj_list {self.grid_pt.adj_list}')
                 self.location_displayed = True
+                pg.mixer.Sound.play(self.eat)
             return True
         return False
 
@@ -62,6 +65,7 @@ class Character:
             self.pt = self.grid_pt_next.pt
             print(f'AT SOURCE {self.grid_pt.index} with adj_list {self.grid_pt.adj_list}')
             return True
+
         return False
 
     def off_screen(self): return self.rect.right < 0 or self.rect.left > self.screen_rect.width
@@ -126,7 +130,7 @@ class Character:
 # class Pacman
 # ===================================================================================================
 class Pacman(Character):
-    images_pman = [pg.image.load('images/pmanopen' + str(x) + '.png') for x in range(0, 12)]
+    images_pman = [pg.image.load('images/pmanopen' + str(x) + '.png') for x in range(0, 7)]
 
     def __init__(self, game, v=Vector(-1, 0), grid_pt=None):
         super().__init__(game=game, v=v, name="Pacman", scale=0.55, grid_pt=game.maze.location(2, 5),

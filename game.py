@@ -4,6 +4,7 @@ from settings import Settings
 from maze import Maze, GridPoint
 from character import Pacman, Blinky, Inky, Pinky, Clyde
 from os import path
+from timer import Timer
 
 HS_FILE = "HighScores.txt"
 
@@ -31,6 +32,9 @@ class Game:
         self.title = True
         self.scorescreendisplay = False
         self.white = (255,255,255)
+        self.score = 0
+        self.intro = [pg.image.load('images/intro' + str(x) + '.png') for x in range(0, 4)]
+        self.timer = Timer(self.intro, wait=200)
 
     def to_grid(self, index):
         row = index // 11
@@ -39,6 +43,12 @@ class Game:
         return ss
 
     def to_pixel(self, grid): pixels = []
+
+    def intro(self):
+        image = self.timer.imagerect()
+        self.rect = image.get_rect()
+        self.rect.centerx, self.rect.centery = self.pt.x + 5, self.pt.y + 5
+        self.screen.blit(image, self.rect)
 
     def play(self):
         while not self.finished:
@@ -55,9 +65,10 @@ class Game:
 
     def title_screen(self):
         while self.title:
-            self.textset('PAC-MAN Portal', 330, 200, self.white)
-            self.textset('Press SPACE to begin', 310, 270, self.white)
-            self.textset('Press \'H\' to view high scores', 250, 650, self.white)
+            self.screen.fill((0,0,0))
+            self.textset('PAC-MAN', 360, 200, self.white)
+            self.textset('Press SPACE to begin', 270, 270, self.white)
+            self.textset('Press \'H\' to view high scores', 220, 650, self.white)
             pg.display.flip()
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -71,18 +82,20 @@ class Game:
                         self.title = False
                         self.scorescreendisplay = True
                         self.score_screen()
+            images_intro = [pg.image.load('images/intro' + str(i) + '.png') for i in range(4)]
+            timer = Timer(frames=images_intro, wait=50)
 
     def score_screen(self):
         while self.scorescreendisplay:
-            self.screen.fill(self.settings.bg_color)
-            self.textset('High Scores:', 500, 50, self.white)
-            self.textset('Press esc to exit', 470, 750, self.white)
+            self.screen.fill((0,0,0))
+            self.textset('High Scores:', 360, 69, self.white)
+            self.textset('Press esc to exit', 320, 760, self.white)
             with open('HighScores.txt', 'r') as f:
                 lines = f.readlines()
             numbers = [int(e.strip()) for e in lines]
             numbers.sort(reverse=True)
             for i in range(8):
-                self.textset(f'{numbers[i]}', 580, 100+i*80, self.white)
+                self.textset(f'{numbers[i]}', 470, 120+i*80, self.white)
             pg.display.flip()
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -93,6 +106,11 @@ class Game:
                         self.scorescreendisplay = False
                         self.title = True
                         self.title_screen()
+
+    def savescore(self):
+        f = open("HighScores.txt", "a")
+        f.write(str(self.score))
+        f.write("\n")
 
 
 def main():
